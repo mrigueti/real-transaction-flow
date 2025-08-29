@@ -1,6 +1,4 @@
 const amqp = require("amqplib");
-const generateCSV = require("../reports/csvReports");
-const generatePDF = require("../reports/pdfReports");
 
 async function consumeQueue(queueName) {
   try {
@@ -12,12 +10,6 @@ async function consumeQueue(queueName) {
     channel.consume(queueName, async (msg) => {
       const content = JSON.parse(msg.content.toString());
       console.log("Mensagem recebida:", content);
-
-      if (content.status === "confirmed") {
-        await generateCSV([content]);
-        await generatePDF([content]);
-      }
-
       channel.ack(msg);
     });
   } catch (error) {
