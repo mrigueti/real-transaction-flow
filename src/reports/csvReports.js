@@ -3,7 +3,7 @@ const path = require("path");
 
 async function generateCSV(data) {
   const csvWriter = createCsvWriter({
-    path: path.resolve(__dirname, "sales.csv"),
+    path: path.resolve(__dirname, "vendas.csv"),
     header: [
       { id: "id", title: "ID" },
       { id: "amount", title: "Amount" },
@@ -14,7 +14,6 @@ async function generateCSV(data) {
   console.log("CSV gerado!");
 }
 
-// Exemplo de uso
 generateCSV([
   { id: 1, amount: 100, status: "paid" },
   { id: 2, amount: 200, status: "paid" },

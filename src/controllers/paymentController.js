@@ -3,6 +3,8 @@ const Stripe = require("stripe");
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const sendToQueue = require("../queues/producer");
+const path = require("path");
 
 router.post("/create-checkout-session", async (req, res) => {
   try {
@@ -17,8 +19,9 @@ router.post("/create-checkout-session", async (req, res) => {
         },
         quantity: item.quantity,
       })),
-      success_url: `${req.protocol}://${req.get("host")}/success`,
-      cancel_url: `${req.protocol}://${req.get("host")}/cancel`,
+  
+      success_url: `${req.protocol}://${req.get("host")}/payments/success`,
+      cancel_url: `${req.protocol}://${req.get("host")}/payments/cancel`,
     });
     res.json({ url: session.url });
   } catch (error) {
@@ -41,11 +44,26 @@ router.post(
 
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
-      console.log("Pagamento confirmado:", session);
+      const paymentData = {
+        id: session.id,
+        amount: session.amount_total / 100,
+        status: "confirmed",
+      };
+
+      sendToQueue("paymentQueue", paymentData);
     }
 
     res.json({ received: true });
   }
 );
+
+router.get("/success", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../public/success.html"));
+});
+
+router.get("/cancel", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../public/cancel.html"));
+});
+
 
 module.exports = router;
