@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   app:
     build: .
@@ -31,6 +31,13 @@ services:
       retries: 10
       interval: 3s
       timeout: 30s
+  rabbitmq:
+  image: rabbitmq:3-management
+  ports:
+    - "5672:5672"
+    - "15672:15672"
+  networks:
+    - app-network
 volumes:
   mysql-data:
 networks:
