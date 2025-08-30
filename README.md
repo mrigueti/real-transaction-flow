@@ -26,8 +26,7 @@ DB_PORT=3306
 DB_NAME=pagamentos_db
 DB_USER=root
 DB_PASSWORD=rootpassword
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_SECRET_KEY=sua_key
 MYSQL_DATABASE=pagamentos_db
 MYSQL_PASSWORD=rootpassword
 ```
